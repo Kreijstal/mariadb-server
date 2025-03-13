@@ -1052,6 +1052,7 @@ typedef ulong		myf;	/* Type of MyFlags in my_funcs */
 #endif
 
 #ifdef _WIN32
+#if !defined(HAVE_DLFCN_H) && !defined(_DLFCN_H)
 #define dlsym(lib, name) (void*)GetProcAddress((HMODULE)lib, name)
 #define dlopen(libname, unused) LoadLibraryEx(libname, NULL, 0)
 #define RTLD_DEFAULT GetModuleHandle(NULL)
@@ -1069,6 +1070,7 @@ static inline char *dlerror(void)
 }
 #define HAVE_DLOPEN 1
 #define HAVE_DLERROR 1
+#endif /* !defined(HAVE_DLFCN_H) */
 #endif
 
 #ifdef HAVE_DLFCN_H
