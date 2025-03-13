@@ -30,7 +30,7 @@ extern "C" {
 #define EXTERNC
 #endif /* __cplusplus */ 
 
-#if defined(_WIN32)
+#if defined(_WIN32) && !defined(__MINGW32__)
 typedef CRITICAL_SECTION pthread_mutex_t;
 typedef DWORD		 pthread_t;
 typedef struct thread_attr {
