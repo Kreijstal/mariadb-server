@@ -277,8 +277,13 @@ IF(MSVC)
 ENDIF()
 
 # Always link with socket/synchronization libraries
-STRING(APPEND CMAKE_C_STANDARD_LIBRARIES " ws2_32.lib synchronization.lib")
-STRING(APPEND CMAKE_CXX_STANDARD_LIBRARIES " ws2_32.lib synchronization.lib")
+if (MSVC)
+    STRING(APPEND CMAKE_C_STANDARD_LIBRARIES " ws2_32.lib synchronization.lib")
+    STRING(APPEND CMAKE_CXX_STANDARD_LIBRARIES " ws2_32.lib synchronization.lib")
+elseif (MINGW)
+    STRING(APPEND CMAKE_C_STANDARD_LIBRARIES " -lws2_32 -lsynchronization")
+    STRING(APPEND CMAKE_CXX_STANDARD_LIBRARIES " -lws2_32 -lsynchronization")
+endif()
 
 # System checks
 SET(SIGNAL_WITH_VIO_CLOSE 1) # Something that runtime team needs

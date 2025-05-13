@@ -23,7 +23,6 @@ INCLUDE (CheckCCompilerFlag)
 INCLUDE (CheckCSourceRuns)
 INCLUDE (CheckSymbolExists)
 
-
 # WITH_PIC options.Not of much use, PIC is taken care of on platforms
 # where it makes sense anyway.
 IF(UNIX)
@@ -165,6 +164,11 @@ IF(UNIX)
   ENDIF()
   ADD_FEATURE_INFO(LIBWRAP HAVE_LIBWRAP "Support for tcp wrappers")
 ENDIF()
+IF(MINGW)
+  SET(CMAKE_DL_LIBS "dl")
+  SET(CMAKE_THREAD_LIBS_INIT "pthread")
+  SET(CMAKE_REQUIRED_LIBRARIES ${CMAKE_DL_LIBS} ${CMAKE_THREAD_LIBS_INIT})
+ENDIF()
 
 #
 # Tests for header files
@@ -268,6 +272,12 @@ ENDIF()
 # Figure out threading library
 #
 FIND_PACKAGE (Threads)
+IF(MINGW)
+  IF(CMAKE_THREAD_LIBS_INIT)
+    LIST(APPEND CMAKE_REQUIRED_LIBRARIES "${CMAKE_THREAD_LIBS_INIT}")
+    LIST(REMOVE_DUPLICATES CMAKE_REQUIRED_LIBRARIES)
+  ENDIF()
+ENDIF()
 
 FUNCTION(MY_CHECK_PTHREAD_ONCE_INIT)
   MY_CHECK_C_COMPILER_FLAG("-Werror")
@@ -308,9 +318,12 @@ FUNCTION(MY_CHECK_PTHREAD_ONCE_INIT)
   ENDIF()
 ENDFUNCTION()
 
+
 IF(CMAKE_USE_PTHREADS_INIT)
   MY_CHECK_PTHREAD_ONCE_INIT()
 ENDIF()
+
+
 
 #
 # Tests for functions
