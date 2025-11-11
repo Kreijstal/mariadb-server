@@ -20,14 +20,14 @@
 #include "my_nosys.h"
 
 
-#ifdef _WIN32
+#if defined(_MSC_VER)
 extern size_t my_win_read(File Filedes,uchar *Buffer,size_t Count);
 #endif
 
 size_t my_quick_read(File Filedes,uchar *Buffer,size_t Count,myf MyFlags)
 {
   size_t readbytes;
-#ifdef _WIN32
+#if defined(_MSC_VER)
   readbytes= my_win_read(Filedes, Buffer, Count);
 #else
   readbytes= read(Filedes, Buffer, Count);
@@ -52,7 +52,7 @@ size_t my_quick_read(File Filedes,uchar *Buffer,size_t Count,myf MyFlags)
 
 size_t my_quick_write(File Filedes, const uchar *Buffer, size_t Count)
 {
-#ifdef _WIN32
+#if defined(_MSC_VER)
   return my_win_write(Filedes, Buffer, Count);
 #else
 

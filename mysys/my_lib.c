@@ -332,7 +332,7 @@ int my_fstat(File Filedes, MY_STAT *stat_area,
 {
   DBUG_ENTER("my_fstat");
   DBUG_PRINT("my",("fd: %d  MyFlags: %lu", Filedes, MyFlags));
-#ifdef _WIN32
+#if defined(_MSC_VER)
   DBUG_RETURN(my_win_fstat(Filedes, stat_area));
 #else
   DBUG_RETURN(fstat(Filedes, (struct stat *) stat_area));
@@ -351,14 +351,14 @@ MY_STAT *my_stat(const char *path, MY_STAT *stat_area, myf my_flags)
     if (!(stat_area= (MY_STAT *) my_malloc(key_memory_MY_STAT, sizeof(MY_STAT),
                                            my_flags)))
       goto error;
-#ifndef _WIN32
+#if defined(_MSC_VER)
+  if (!my_win_stat(path, stat_area))
+    DBUG_RETURN(stat_area);
+#else
   if (!stat((char *) path, (struct stat *) stat_area))
   {
     DBUG_RETURN(stat_area);
   }
-#else
-  if (!my_win_stat(path, stat_area))
-    DBUG_RETURN(stat_area);
 #endif
   DBUG_PRINT("error",("Got errno: %d from stat", errno));
   my_errno= errno;

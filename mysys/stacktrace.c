@@ -707,14 +707,16 @@ void my_write_core(int unused)
 
 int my_safe_print_str(const char *val, size_t len)
 {
-  __try
-  {
+  #if defined(_MSC_VER)
+  __try {
     my_write_stderr(val, len);
-  }
-  __except(EXCEPTION_EXECUTE_HANDLER)
-  {
+  } __except(EXCEPTION_EXECUTE_HANDLER) {
     my_safe_printf_stderr("%s", "is an invalid string pointer");
   }
+  #else
+  /* On MinGW/GCC we do not have SEH __try; just attempt to write */
+  my_write_stderr(val, len);
+  #endif
   return 0;
 }
 #endif /*_WIN32*/

@@ -6499,6 +6499,7 @@ int ha_create_table(THD *thd, const char *path, const char *db,
     goto err;
   }
 
+#ifdef WITH_VECTOR_MHNSW
   /* create secondary tables for high level indexes */
   if (share.hlindexes())
   {
@@ -6551,6 +6552,7 @@ int ha_create_table(THD *thd, const char *path, const char *db,
     thd->lex->sql_command= old_sql_command;
     free_table_share(&index_share);
   }
+#endif /* WITH_VECTOR_MHNSW */
 
 err:
   free_table_share(&share);

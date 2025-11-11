@@ -38,7 +38,7 @@ size_t my_write(File Filedes, const uchar *Buffer, size_t Count, myf MyFlags)
   
   for (;;)
   {
-#ifdef _WIN32
+#if defined(_MSC_VER)
     if(Filedes < 0)
     {
       my_errno= errno= EBADF;

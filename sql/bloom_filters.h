@@ -33,9 +33,16 @@ SOFTWARE.
   Use gcc function multiversioning to optimize for a specific CPU with run-time
   detection. Works only for x86, for other architectures we provide only one
   implementation for now.
+  
+  Disable multiversioning on Windows/MinGW as ifunc is not supported
 */
 #define DEFAULT_IMPLEMENTATION
-#if __GNUC__ > 7 && defined(__GLIBC__)
+/*
+  Enable CPU multiversioning on non-Windows (no MinGW) when using GCC>7.
+  Keep a plain default implementation on MinGW/Windows where ifunc is not supported.
+*/
+#if !defined(_WIN32) && !defined(_WIN64) && !defined(__MINGW32__) && !defined(__MINGW64__)
+# if __GNUC__ > 7
 #ifdef __x86_64__
 #ifdef HAVE_IMMINTRIN_H
 #include <immintrin.h>
@@ -52,11 +59,13 @@ SOFTWARE.
 #undef DEFAULT_IMPLEMENTATION
 #define NEON_IMPLEMENTATION
 #endif
-#endif
-#if defined __powerpc64__ && defined __VSX__
-#include <altivec.h>
-#define POWER_IMPLEMENTATION
-#endif
+# endif /* __GNUC__ > 7 */
+/* PowerPC VSX support (non-Windows environments) */
+# if defined __powerpc64__ && defined __VSX__
+# include <altivec.h>
+# define POWER_IMPLEMENTATION
+# endif
+#endif /* !Windows/MinGW */
 
 template <typename T>
 struct PatternedSimdBloomFilter

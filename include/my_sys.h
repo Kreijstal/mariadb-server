@@ -18,13 +18,13 @@
 #define _my_sys_h
 
 #include <m_string.h>
+#include <my_pthread.h>
 #include <mysql/psi/mysql_memory.h>
 
 C_MODE_START
 
 
 #include <my_valgrind.h>
-#include <my_pthread.h>
 #include <m_ctype.h>                    /* for CHARSET_INFO */
 #include <stdarg.h>
 #include <typelib.h>

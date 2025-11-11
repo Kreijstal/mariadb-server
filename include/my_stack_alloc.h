@@ -19,7 +19,7 @@
 
 #ifdef _MSC_VER
 #include <intrin.h> // For MSVC-specific intrinsics
-#else
+#elif !defined(_WIN32)
 #include <sys/resource.h>
 #endif
 

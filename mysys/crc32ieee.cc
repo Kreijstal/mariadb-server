@@ -28,7 +28,8 @@ static unsigned int my_crc32_zlib(unsigned int crc, const void *data,
 
 typedef unsigned int (*my_crc32_t)(unsigned int, const void *, size_t);
 
-#if defined _M_IX86 || defined _M_X64 || defined __i386__ || defined __x86_64__
+#if (defined _M_IX86 || defined _M_X64 || defined __i386__ || defined __x86_64__) && \
+    !(defined(__MINGW32__) || defined(__MINGW64__))
 extern "C" my_crc32_t crc32_pclmul_enabled();
 #elif defined HAVE_ARMV8_CRC
 extern "C" int crc32_aarch64_available();
@@ -38,7 +39,8 @@ extern "C" unsigned int crc32_aarch64(unsigned int, const void *, size_t);
 
 static my_crc32_t init_crc32()
 {
-#if defined _M_IX86 || defined _M_X64 || defined __i386__ || defined __x86_64__
+#if (defined _M_IX86 || defined _M_X64 || defined __i386__ || defined __x86_64__) && \
+    !(defined(__MINGW32__) || defined(__MINGW64__))
   if (my_crc32_t crc= crc32_pclmul_enabled())
     return crc;
 #elif defined HAVE_ARMV8_CRC

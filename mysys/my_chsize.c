@@ -55,7 +55,7 @@ int my_chsize(File fd, my_off_t newlength, int filler, myf MyFlags)
 
   if (oldsize > newlength)
   {
-#ifdef _WIN32
+#if defined(_MSC_VER)
     if (my_win_chsize(fd, newlength))
     {
       my_errno= errno;

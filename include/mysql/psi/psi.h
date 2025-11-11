@@ -51,7 +51,7 @@
 #include "psi_base.h"
 #include "psi_memory.h"
 
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(__MINGW32__) && !defined(__MINGW64__)
 typedef struct thread_attr pthread_attr_t;
 typedef DWORD pthread_t;
 #endif
@@ -3043,4 +3043,3 @@ extern MYSQL_PLUGIN_IMPORT PSI *PSI_server;
 
 C_MODE_END
 #endif /* MYSQL_PERFORMANCE_SCHEMA_INTERFACE_H */
-
