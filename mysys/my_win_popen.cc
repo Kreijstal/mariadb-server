@@ -22,6 +22,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301  USA */
 #include <mutex>
 #include <stdlib.h>
 #include <unordered_map>
+#include <cstdio>
+#include <string>
 
 enum
 {

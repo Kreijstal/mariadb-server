@@ -279,7 +279,7 @@ static long int timedif(struct timeval a, struct timeval b)
     return s + us;
 }
 
-#ifdef _WIN32
+#if defined(_MSC_VER)
 static int gettimeofday(struct timeval *tp, void *tzp)
 {
   unsigned int ticks;

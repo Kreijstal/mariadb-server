@@ -22,7 +22,7 @@
 #include <stdio.h>
 #include <time.h>
 
-#ifdef _WIN32
+#if defined(_MSC_VER)
 #include <icu.h>
 #include <objbase.h>
 #define MAX_TZ_ABBR 64
@@ -125,7 +125,7 @@ static int sync_icu_timezone()
   uenum_close(en);
   return ret;
 }
-#endif /* _WIN32 */
+#endif /* _MSC_VER */
 
 /**
   Initialize time conversion information
@@ -137,7 +137,7 @@ static int sync_icu_timezone()
 extern "C" void my_tzset()
 {
   tzset();
-#ifdef _WIN32
+#if defined(_MSC_VER)
   /*
     CoInitializeEx is needed by ICU on older Windows 10, until
     version 1903.
@@ -154,7 +154,7 @@ extern "C" void my_tzset()
 */
 extern "C" void my_tzname(char* sys_timezone, size_t size)
 {
-#ifdef _WIN32
+#if defined(_MSC_VER)
   if (use_icu_for_tzinfo)
   {
     /* TZ environment variable not set - return default timezone name*/
@@ -226,7 +226,7 @@ static time_t my_timegm(const struct tm *t)
 */
 void my_tzinfo(time_t t, struct my_tz* tz)
 {
-#ifdef _WIN32
+#if defined(_MSC_VER)
   if (use_icu_for_tzinfo)
   {
     icu_get_tzinfo(t, tz);

@@ -49,12 +49,14 @@ File my_open(const char *FileName, int Flags, myf MyFlags)
 		   FileName, Flags, MyFlags));
   if (!(MyFlags & (MY_WME | MY_FAE | MY_FFNF)))
     MyFlags|= my_global_flags;
-#if defined(_WIN32)
+#if defined(_MSC_VER)
   fd= my_win_open(FileName, Flags);
 #else
+  #ifndef _WIN32
   if (MyFlags & MY_NOSYMLINKS)
     fd = open_nosymlinks(FileName, Flags | O_CLOEXEC, my_umask);
   else
+  #endif
     fd = open(FileName, Flags | O_CLOEXEC, my_umask);
 #endif
 
@@ -89,7 +91,7 @@ int my_close(File fd, myf MyFlags)
     my_file_info[fd].name= NULL;
     my_file_info[fd].type= UNOPEN;
   }
-#ifndef _WIN32
+#if !defined(_MSC_VER)
   err= close(fd);
 #else
   err= my_win_close(fd);

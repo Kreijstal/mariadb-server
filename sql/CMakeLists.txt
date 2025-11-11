@@ -113,7 +113,8 @@ SET (SQL_SOURCE
                mf_iocache.cc my_decimal.cc
                mysqld.cc net_serv.cc  keycaches.cc
                ../sql-common/client_plugin.c
-               opt_range.cc vector_mhnsw.cc
+               opt_range.cc
+               $<$<BOOL:${WITH_VECTOR_MHNSW}>:vector_mhnsw.cc>
                opt_group_by_cardinality.cc
                opt_rewrite_date_cmp.cc
                opt_rewrite_remove_casefold.cc
@@ -254,7 +255,8 @@ TARGET_LINK_LIBRARIES(sql
   online_alter_log
   ${LIBWRAP} ${LIBCRYPT} ${CMAKE_DL_LIBS} ${CMAKE_THREAD_LIBS_INIT}
   ${SSL_LIBRARIES}
-  ${LIBSYSTEMD})
+  ${LIBSYSTEMD}
+  $<$<BOOL:${WIN32}>:psapi>)
 IF(TARGET pcre2)
   ADD_DEPENDENCIES(sql pcre2)
 ENDIF()

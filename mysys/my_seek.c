@@ -56,7 +56,7 @@ my_off_t my_seek(File fd, my_off_t pos, int whence, myf MyFlags)
       Make sure we are using a valid file descriptor!
   */
   DBUG_ASSERT(fd != -1);
-#ifdef _WIN32
+#if defined(_MSC_VER)
   newpos= my_win_lseek(fd, pos, whence);
 #else
   newpos= lseek(fd, pos, whence);
@@ -86,7 +86,7 @@ my_off_t my_tell(File fd, myf MyFlags)
   DBUG_ENTER("my_tell");
   DBUG_PRINT("my",("fd: %d  MyFlags: %lu",fd, MyFlags));
   DBUG_ASSERT(fd >= 0);
-#if defined (HAVE_TELL) && !defined (_WIN32) && !defined(_AIX)
+#if defined (HAVE_TELL) && !defined (_MSC_VER) && !defined(_AIX)
   pos= tell(fd);
 #else
   pos= my_seek(fd, 0L, MY_SEEK_CUR,0);

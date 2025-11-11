@@ -46,7 +46,7 @@ FILE *my_fopen(const char *filename, int flags, myf MyFlags)
 
   make_ftype(type,flags);
 
-#ifdef _WIN32
+#if defined(_MSC_VER)
   fd= my_win_fopen(filename, type);
 #else
   fd= fopen(filename, type);
@@ -82,7 +82,7 @@ FILE *my_fopen(const char *filename, int flags, myf MyFlags)
 } /* my_fopen */
 
 
-#if defined(_WIN32)
+#if defined(_MSC_VER)
 
 static FILE *my_win_freopen(const char *path, const char *mode, FILE *stream)
 {
@@ -146,7 +146,7 @@ FILE *my_freopen(const char *path, const char *mode, FILE *stream)
 {
   FILE *result;
 
-#if defined(_WIN32)
+#if defined(_MSC_VER)
   result= my_win_freopen(path, mode, stream);
 #else
   result= freopen(path, mode, stream);
@@ -171,7 +171,7 @@ int my_fclose(FILE *fd, myf MyFlags)
     my_file_info[file].name= NULL;
     my_file_info[file].type= UNOPEN;
   }
-#ifndef _WIN32
+#if !defined(_MSC_VER)
   err= fclose(fd);
 #else
   err= my_win_fclose(fd);
@@ -205,7 +205,7 @@ FILE *my_fdopen(File Filedes, const char *name, int Flags, myf MyFlags)
 		   Filedes, Flags, MyFlags));
 
   make_ftype(type,Flags);
-#ifdef _WIN32
+#if defined(_MSC_VER)
   fd= my_win_fdopen(Filedes, type);
 #else
   fd= fdopen(Filedes, type);

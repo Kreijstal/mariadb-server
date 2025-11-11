@@ -16,6 +16,7 @@
    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1335  USA */
 
 #include "mysys_priv.h"
+#include <locale.h>
 #include "my_static.h"
 #include "mysys_err.h"
 #include <m_string.h>
@@ -565,4 +566,3 @@ void my_init_mysys_psi_keys()
   mysql_stage_register(category, all_mysys_stages, count);
 }
 #endif /* HAVE_PSI_INTERFACE */
-

@@ -130,6 +130,16 @@ int pthread_cancel(pthread_t thread);
 
 #else /* Normal threads */
 
+/* Ensure basic types like sigset_t are declared */
+#include <sys/types.h>
+#include <signal.h>
+#if defined(__MINGW32__) || defined(__MINGW64__)
+/* MinGW does not typedef sigset_t unless _POSIX is defined; provide a mapping */
+# ifndef _POSIX
+typedef _sigset_t sigset_t;
+# endif
+#endif
+
 #ifdef HAVE_rts_threads
 #define sigwait org_sigwait
 #include <signal.h>
@@ -175,7 +185,11 @@ int sigwait(sigset_t *set, int *sig);
 
 static inline int my_sigwait(sigset_t *set, int *sig, int *code)
 {
-#ifdef HAVE_SIGWAITINFO
+#if defined(__MINGW32__) || defined(__MINGW64__)
+  /* No sigwait on MinGW; emulate as no-op */
+  (void)set;
+  *sig = 0; *code = 0; return 0;
+#elif defined(HAVE_SIGWAITINFO)
   siginfo_t siginfo;
   *sig= sigwaitinfo(set, &siginfo);
   *code= siginfo.si_code;
@@ -190,7 +204,7 @@ static inline int my_sigwait(sigset_t *set, int *sig, int *code)
 #define pthread_sigmask(A,B,C) sigthreadmask((A),(B),(C))
 #endif
 
-#if !defined(HAVE_SIGWAIT) && !defined(HAVE_rts_threads) && !defined(sigwait) && !defined(alpha_linux_port) && !defined(_AIX)
+#if !defined(HAVE_SIGWAIT) && !defined(HAVE_rts_threads) && !defined(sigwait) && !defined(alpha_linux_port) && !defined(_AIX) && !defined(__MINGW32__) && !defined(__MINGW64__)
 int sigwait(sigset_t *setp, int *sigp);		/* Use our implementation */
 #endif
 

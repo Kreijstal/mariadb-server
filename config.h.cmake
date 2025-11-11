@@ -401,8 +401,9 @@
 
 #cmakedefine SIGNAL_WITH_VIO_CLOSE 1
 
-/* Windows stuff, mostly functions, that have Posix analogs but named differently */
-#ifdef _WIN32
+/* Windows stuff, mostly functions, that have Posix analogs but named differently
+   Avoid redefining standard types under MinGW where they already exist. */
+#if defined(_WIN32) && !defined(__MINGW32__) && !defined(__MINGW64__)
 #define S_IROTH _S_IREAD
 #define S_IFIFO _S_IFIFO
 #define SIGQUIT SIGTERM
@@ -422,7 +423,17 @@
 #define HAVE_SETENV
 #define NOMINMAX 1
 #define PSAPI_VERSION 2     /* for GetProcessMemoryInfo() */
-#endif /* _WIN32 */
+#endif /* _WIN32 && !MinGW */
+
+/* Minimal signal compatibility for MinGW builds */
+#if defined(_WIN32) && (defined(__MINGW32__) || defined(__MINGW64__))
+# ifndef SIGQUIT
+#  define SIGQUIT SIGTERM
+# endif
+# ifndef SIGPIPE
+#  define SIGPIPE SIGINT
+# endif
+#endif
 
 /*
   MySQL features

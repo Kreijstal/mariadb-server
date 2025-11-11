@@ -19,7 +19,7 @@
 #include "my_base.h"
 #include <m_string.h>
 #include <errno.h>
-#ifndef _WIN32
+#if !defined(_MSC_VER)
 #include <unistd.h>
 #endif
 
@@ -60,10 +60,14 @@ size_t my_pread(File Filedes, uchar *Buffer, size_t Count, my_off_t offset,
   for (;;)
   {
     errno= 0;    /* Linux, Windows don't reset this on EOF/success */
-#ifdef _WIN32
+#if defined(_MSC_VER)
     readbytes= my_win_pread(Filedes, Buffer, Count, offset);
 #else
-    readbytes= pread(Filedes, Buffer, Count, offset);
+    /* Fallback: reposition then read */
+    if (my_seek(Filedes, offset, MY_SEEK_SET, MYF(0)) == MY_FILEPOS_ERROR)
+      readbytes= (size_t)-1;
+    else
+      readbytes= read(Filedes, Buffer, Count);
 #endif
 
     if (readbytes != Count)
@@ -153,10 +157,14 @@ size_t my_pwrite(int Filedes, const uchar *Buffer, size_t Count,
 
   for (;;)
   {
-#ifdef _WIN32
+#if defined(_MSC_VER)
     writtenbytes= my_win_pwrite(Filedes, Buffer, Count,offset);
 #else
-    writtenbytes= pwrite(Filedes, Buffer, Count, offset);
+    /* Fallback: reposition then write */
+    if (my_seek(Filedes, offset, MY_SEEK_SET, MYF(0)) == MY_FILEPOS_ERROR)
+      writtenbytes= (size_t)-1;
+    else
+      writtenbytes= write(Filedes, Buffer, Count);
 #endif
 
     DBUG_EXECUTE_IF ("simulate_file_pwrite_error",

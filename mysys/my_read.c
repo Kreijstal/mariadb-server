@@ -45,7 +45,7 @@ size_t my_read(File Filedes, uchar *Buffer, size_t Count, myf MyFlags)
   for (;;)
   {
     errno= 0;					/* Linux, Windows don't reset this on EOF/success */
-#ifdef _WIN32
+#if defined(_MSC_VER)
     readbytes= my_win_read(Filedes, Buffer, Count);
 #else
     readbytes= read(Filedes, Buffer, Count);

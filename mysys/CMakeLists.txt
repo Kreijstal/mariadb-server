@@ -50,14 +50,21 @@ SET(MYSYS_SOURCES  array.c charset-def.c charset.c my_default.c
                                 my_timezone.cc  my_thread_name.cc
                                 my_virtual_mem.c)
 
-IF (WIN32)
+IF (MSVC)
   SET (MYSYS_SOURCES ${MYSYS_SOURCES}
     my_winthread.c
     my_wintoken.c
     my_wincond.c
-    my_winerr.c
     my_winfile.c
     my_minidump.cc
+    my_win_popen.cc)
+ENDIF()
+
+# Windows wrappers needed across MSVC and MinGW builds
+IF (WIN32)
+  SET (MYSYS_SOURCES ${MYSYS_SOURCES}
+    my_winerr.c
+    my_winfile.c
     my_win_popen.cc)
 ENDIF()
 

@@ -18,7 +18,7 @@
 #include "mysys_err.h"
 #include <sys/types.h>
 #include <sys/stat.h>
-#ifdef _WIN32
+#if defined(_WIN32)
 #include <direct.h>
 #endif
 
@@ -26,7 +26,7 @@ int my_mkdir(const char *dir, int Flags, myf MyFlags)
 {
   DBUG_ENTER("my_dir");
   DBUG_PRINT("enter",("dir: %s",dir));
-#ifdef _WIN32
+#if defined(_MSC_VER)
   LPSECURITY_ATTRIBUTES attr =
     my_dir_security_attributes.lpSecurityDescriptor?
     &my_dir_security_attributes : NULL;
@@ -35,7 +35,8 @@ int my_mkdir(const char *dir, int Flags, myf MyFlags)
   {
     my_osmaperr(GetLastError());
 #else
-  if (mkdir((char*) dir, Flags & my_umask_dir))
+  /* MinGW: use _mkdir which takes one argument */
+  if (_mkdir((char*) dir))
   {
 #endif
     my_errno=errno;

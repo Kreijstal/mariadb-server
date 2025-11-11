@@ -186,7 +186,7 @@ my_off_t my_ftell(FILE *stream, myf MyFlags __attribute__((unused)))
 /* Get a File corresponding to the stream*/
 int my_fileno(FILE *f)
 {
-#ifdef _WIN32
+#if defined(_MSC_VER)
   return my_win_fileno(f);
 #else
  return fileno(f);

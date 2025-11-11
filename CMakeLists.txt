@@ -132,6 +132,12 @@ ENDIF()
 # NUMA
 SET(WITH_NUMA "AUTO" CACHE STRING "Build with non-uniform memory access, allowing --innodb-numa-interleave. Options are ON|OFF|AUTO. ON = enabled (requires NUMA library), OFF = disabled, AUTO = enabled if NUMA library found.")
 
+# MHNSW vector index support
+SET(WITH_VECTOR_MHNSW ON CACHE BOOL "Build with MHNSW vector index support")
+IF(WITH_VECTOR_MHNSW)
+  ADD_DEFINITIONS(-DWITH_VECTOR_MHNSW)
+ENDIF()
+
 SET(MYSQL_MAINTAINER_MODE "AUTO" CACHE STRING "Enable MariaDB maintainer-specific warnings. One of: NO (warnings are disabled) WARN (warnings are enabled) ERR (warnings are errors) AUTO (warnings are errors in Debug only)")
 
 # Packaging

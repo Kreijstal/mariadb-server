@@ -86,8 +86,11 @@ int my_sync(File fd, myf my_flags)
     res= fsync(fd);
     if (res == -1 && errno == ENOLCK)
       res= 0;                                   /* Result Bug in Old FreeBSD */
-#elif defined(_WIN32)
+#elif defined(_MSC_VER)
     res= my_win_fsync(fd);
+#elif defined(__MINGW32__) || defined(__MINGW64__)
+    /* MinGW: use _commit to flush OS buffers */
+    res= _commit(fd);
 #else
 #error Cannot find a way to sync a file, durability in danger
     res= 0;					/* No sync (strange OS) */
